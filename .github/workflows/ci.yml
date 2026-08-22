@@ -21,8 +21,6 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.10.0
         with:
           environments: test
-          cache: true
-          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: Run tests
         run: pixi run --environment test test
@@ -36,8 +34,6 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.10.0
         with:
           environments: publish
-          cache: true
-          cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
 
       - name: Build and check package
         run: pixi run --environment publish check
