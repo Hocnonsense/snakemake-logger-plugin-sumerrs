@@ -1,6 +1,6 @@
 [project]
 name = "snakemake-logger-plugin-sumerrs"
-version = "0.1.0"
+version = "0.2.0"
 description = "Collect and print errors and warnings when snakemake workflow ends"
 authors = [{ name = "Hwrn Aou", email = "hwrn.aou@sjtu.edu.cn" }]
 readme = "README.md"
