@@ -12,6 +12,8 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - uses: googleapis/release-please-action@v5
         id: release
@@ -22,22 +24,27 @@ jobs:
           # should itself trigger CI on `main`.
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
       - uses: actions/checkout@v4
-        if: ${{ steps.release.outputs.release_created }}
 
       - name: Install Pixi
-        if: ${{ steps.release.outputs.release_created }}
         uses: prefix-dev/setup-pixi@v0.10.0
         with:
           environments: publish
 
       - name: Build and check package
-        if: ${{ steps.release.outputs.release_created }}
         run: pixi run --environment publish check
 
+      # Trusted Publishing (OIDC): no username/password; the PyPI side must
+      # have this repo + workflow (release-please.yml) + environment "pypi"
+      # registered as a trusted publisher.
       - name: Publish to PyPI
-        if: ${{ steps.release.outputs.release_created }}
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_TOKEN }}
