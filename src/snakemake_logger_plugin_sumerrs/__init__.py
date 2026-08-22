@@ -91,10 +91,9 @@ class LogHandler(LogHandlerBase):
         try:
             if not self._collect:
                 return
-            with self._lock:
-                # Report exactly once. logging.shutdown() also closes every handler
-                # at process exit, so without this guard the summary would print
-                # a second (empty) time.
+            with self._lock:  # Report exactly once.
+                # logging.shutdown() also closes every handler at process exit,
+                # so without this guard the summary would print a second (empty) time.
                 if self._reported:
                     return
                 self._reported = True
