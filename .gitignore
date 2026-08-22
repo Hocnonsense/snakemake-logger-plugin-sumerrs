@@ -1,0 +1,12 @@
+!.gitignore
+
+!LICENSE
+!pyproject.toml
+!*.py
+
+
+!src/
+!tests/
+!.github/
+!.github/*
+!.github/*/*.yml

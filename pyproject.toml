@@ -1,0 +1,57 @@
+[project]
+name = "snakemake-logger-plugin-sumerrs"
+version = "0.1.0"
+description = "Collect and print errors and warnings when snakemake workflow ends"
+authors = [{ name = "Hwrn Aou", email = "hwrn.aou@sjtu.edu.cn" }]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12,<4.0"
+dependencies = ["snakemake-interface-logger-plugins>=2.1.0"]
+keywords = ["snakemake", "plugin", "logger", "error", "reporting"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Environment :: Console",
+]
+
+[tool.poetry]
+packages = [{ include = "snakemake_logger_plugin_sumerrs", from = "src" }]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+snakemake-logger-plugin-sumerrs = { path = ".", editable = true }
+
+[tool.pixi.feature.test.dependencies]
+pytest = ">=8"
+python = "3.12.*"
+packaging = ">=24.0,<26"  # work around https://pixi.sh/latest/concepts/conda_pypi/#pinned-package-conflicts
+
+[tool.pixi.feature.test.pypi-dependencies]
+snakemake = ">=9.24"
+
+[tool.pixi.environments]
+test = { features = ["test"] }
+publish = { features = ["publish"] }
+
+[tool.pixi.feature.test.tasks]
+test = "pytest -q"
+
+[tool.pixi.feature.publish.dependencies]
+python-build = ">=1.2"
+twine = ">=6"
+
+[tool.pixi.feature.publish.tasks]
+build = "python -m build"
+check = { cmd = "python -m twine check dist/*", depends-on = ["build"] }
